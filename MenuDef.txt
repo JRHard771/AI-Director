@@ -1,0 +1,83 @@
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "AI Director Options", "AIDirOptions"
+}
+
+OptionValue "AID_BossSpawn"
+{
+	0, "Off"
+	1, "On"
+	2, "On (Strict)"
+}
+
+OptionMenu "AIDirOptions"
+{
+	Title "AI Director Options"
+	Submenu "Item Randomizer", "AIDirItems"
+	StaticText ""
+	Slider "Min Spawn Distance", "aid_mindistance", 128.0, 4096.0, 128.0
+	Slider "Max Spawn Distance", "aid_maxdistance", 128.0, 4096.0, 128.0
+	StaticText "Defines the range within which continual spawns may occur.", "Grey"
+	StaticText ""
+	Slider "Min Group Size", "aid_mingroupsize", 1, 10, 1
+	Slider "Max Group Size", "aid_maxgroupsize", 1, 10, 1
+	StaticText "Determines how many monsters may spawn at a single spawn point.", "Grey"
+	StaticText ""
+	Slider "Spawn Rate", "aid_spawnrate", 35, 700, 35
+	StaticText "Affects the time between continual spawns. Higher values are", "Grey"
+	StaticText "slower/less frequent. Spawning larger groups of monsters will", "Grey"
+	StaticText "also create longer pauses between spawns, so this can be", "Grey"
+	StaticText "affected by your group size settings.", "Grey"
+	StaticText ""
+	Slider "Starting Population Factor", "aid_startspawns", 0.0, 100.0, 1.0
+	StaticText "Adjusts how many monsters are spawned on map start. This is also", "Grey"
+	StaticText "affected by your group size settings.", "Grey"
+	StaticText ""
+	Option "No Spawns Behind Player", "aid_bootysnatchers", "onoff"
+	StaticText "Prevents continual spawns from being placed anywhere behind the", "Grey"
+	StaticText "player's current heading - or, if the player is not moving,", "Grey"
+	StaticText "behind the player's viewing angle.", "Grey"
+	StaticText ""
+	Option "Permissive Map Start Spawns", "aid_surpriseparties", "onoff"
+	StaticText "Allows starting monster populations to spawn in the player's", "Grey"
+	StaticText "line of sight. This can result in very difficult starts on some", "Grey"
+	StaticText "maps.", "Grey"
+	StaticText ""
+	Option "Dynamically Soften Spawns", "aid_softenspawns", "onoff"
+	StaticText "Causes the continual spawn rate to decrease based on all", "Grey"
+	StaticText "players' health and armor levels.", "Grey"
+	StaticText ""
+	Option "Preserve Boss Monsters", "aid_saveboss", "AID_BossSpawn"
+	StaticText "Prevents the AI Director from removing and spawning boss", "Grey"
+	StaticText "monsters. Setting this to Strict will also preserve mini-boss", "Grey"
+	StaticText "monsters.", "Grey"
+	StaticText ""
+	Option "Disable Continual Spawns", "aid_nocontinualspawns", "onoff"
+	StaticText "Disables AI Director spawns after map start.", "Grey"
+}
+
+OptionMenu "AIDirItems"
+{
+	Title "Item Randomizer Options"
+	Option "Randomize Ammo Pickups", "aid_randomammo", "yesno"
+	Option "Randomize Armor Pickups", "aid_randomarmor", "yesno"
+	Option "Randomize Health Pickups", "aid_randomhealth", "yesno"
+	Option "Randomize Powerups", "aid_randompowerup", "yesno"
+	Option "Randomize Weapons", "aid_randomweapon", "yesno"
+	StaticText ""
+	Option "Randomize Custom Inventory", "aid_randomcustom", "yesno"
+	StaticText "WARNING: This option may have unpredictable effects with some", "Grey"
+	StaticText "mods. Enable at your own discretion.", "Grey"
+	StaticText ""
+	Option "Exclude Counted Items", "aid_nobonuses", "onoff"
+	StaticText "Do not remove or spawn items that add to your item score.", "Grey"
+	StaticText ""
+	Slider "Min Item Group Size", "aid_minitemgroup", 1, 10, 1
+	Slider "Max Item Group Size", "aid_maxitemgroup", 1, 10, 1
+	StaticText "Determines how many items may be spawned per spawn point at the", "Grey"
+	StaticText "start of the map.", "Grey"
+	StaticText ""
+	Slider "Item Count Factor", "aid_itemcount", 0.0, 100.0, 1.0
+	StaticText "Adjusts how many items are spawned on map start. This is", "Grey"
+	StaticText "affected by your item group size settings.", "Grey"
+}
