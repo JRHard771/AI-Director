@@ -128,12 +128,12 @@ class AIDirector : EventHandler
 	{
 		if (!spawnpoint)
 		{
-			timer = aid_spawnrate / 2;
+			timer = 35;
 			return;
 		}
 		int maxspawns = random(aid_mingroupsize,max(aid_mingroupsize, int(aid_maxgroupsize * HealthFactor() + 0.5)));
 		
-		timer = maxspawns * aid_spawnrate;
+		timer = maxspawns * aid_spawnrate * 35;
 		
 		Vector3 spawnpos = spawnpoint.pos;
 		int maxfails = 10;
