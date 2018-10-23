@@ -4,23 +4,23 @@
 
 version "3.5"
 
-class AIDirectorSpawnPoint : Actor
+class AIDSpawnPoint : Actor
 {
+	bool bUsedOnce;
 	Default { +NOINTERACTION }
 }
 
-class AIDirectorItemSpawnPoint : Actor
-{
-	Default { +NOINTERACTION }
-}
+class AIDMonsterSpawnPoint : AIDSpawnPoint {}
+
+class AIDItemSpawnPoint : AIDSpawnPoint {}
 
 class AIDirector : EventHandler
 {
 	static const double[] AID_HITBOX = {1.0, 1.207107, 1.414214, 1.207107};
 
 	bool randomizeItems;
-	Array<Actor> monster_spawns;
-	Array<Actor> item_spawns;
+	Array<AIDSpawnPoint> monster_spawns;
+	Array<AIDSpawnPoint> item_spawns;
 	Array<String> monster_roster;
 	Array<String> item_roster;
 	int timer;
@@ -77,17 +77,24 @@ class AIDirector : EventHandler
 		}
 	}
 	
-	bool Spawn(class<Actor> type, Vector3 initpos, Vector3 pos, Actor player, double spawnangle)
+	bool Spawn(class<Actor> type, AIDSpawnPoint spawnpoint, Vector2 offset, Actor player, double spawnangle)
 	{
-		Actor spawned = Actor.Spawn(type, initpos, ALLOW_REPLACE);
+		Actor spawned = Actor.Spawn(type, spawnpoint.pos, ALLOW_REPLACE);
 		if (spawned)
 		{
-			FLineTraceData ltdata;
-			Vector2 lineVector = pos.xy - spawned.pos.xy;
-			spawned.LineTrace(VectorAngle(lineVector.x, lineVector.y), lineVector.length(), 0, TRF_THRUACTORS, data:ltdata);
-			Vector3 destination = (ltdata.HitDir).unit() * (ltdata.distance - 8.0) + spawned.pos;
-			spawned.SetOrigin(destination,false);
-			spawned.SetOrigin((spawned.pos.xy, spawned.floorz),false);
+			if (spawnpoint.bUsedOnce)
+			{
+				offset *= spawned.radius;
+				Vector3 pos = (spawned.pos.xy + offset, spawned.pos.z);
+				FLineTraceData ltdata;
+				Vector2 lineVector = pos.xy - spawned.pos.xy;
+				spawned.LineTrace(VectorAngle(lineVector.x, lineVector.y), lineVector.length(), 0, TRF_THRUACTORS, data:ltdata);
+				Vector3 destination = (ltdata.HitDir).unit() * (ltdata.distance - 8.0) + spawned.pos;
+				spawned.SetOrigin(destination,false);
+				spawned.SetOrigin((spawned.pos.xy, spawned.floorz),false);
+			}
+			else
+				spawnpoint.bUsedOnce = true;
 			if (!spawned.TestMobjLocation() || spawned.height > spawned.ceilingz - spawned.floorz)
 			{
 				spawned.ClearCounters();
@@ -109,12 +116,12 @@ class AIDirector : EventHandler
 		return false;
 	}
 	
-	Actor GetSpawnPoint(Actor player)
+	AIDSpawnPoint GetSpawnPoint(Actor player)
 	{
-		Array<AIDirectorSpawnPoint> spawns;
+		Array<AIDSpawnPoint> spawns;
 		for (int i = 0; i < monster_spawns.size(); i++)
 		{
-			Actor next = monster_spawns[i];
+			AIDSpawnPoint next = monster_spawns[i];
 			double distance = player.Distance2D(next);
 			double angle = (player.vel.length() > 1.0 ? VectorAngle(player.vel.x, player.vel.y) : player.angle);
 			bool ahead = (aid_bootysnatchers ? true : (Actor.absangle(angle, player.AngleTo(next)) < 180));
@@ -124,7 +131,7 @@ class AIDirector : EventHandler
 		return (spawns.size() == 0 ? null : spawns[random(0, spawns.size()-1)]);
 	}
 	
-	void SpawnGroupAt(Actor spawnpoint, bool useMonsterRoster=true, Actor player=null)
+	void SpawnGroupAt(AIDSpawnPoint spawnpoint, bool useMonsterRoster=true, Actor player=null)
 	{
 		if (!spawnpoint)
 		{
@@ -135,20 +142,16 @@ class AIDirector : EventHandler
 		
 		timer = maxspawns * aid_spawnrate * 35;
 		
-		Vector3 spawnpos = spawnpoint.pos;
 		int maxfails = 10;
 		for (int i = 0; i < maxspawns; i++)
 		{
 			FLineTraceData ltdata;
-			Vector3 monsterPos = spawnpos +
-			(
-				frandom(-512, 512), frandom(-512, 512), 0
-			);
 			int index;
+			Vector2 offset = (random(-2, 2)*2, random(-2, 2)*2);
 			if (useMonsterRoster)
 			{
 				index = random(0,monster_roster.size()-1);
-				if (!Spawn(monster_roster[index], spawnpos, monsterPos, player, spawnpoint.angle))
+				if (!Spawn(monster_roster[index], spawnpoint, offset, player, spawnpoint.angle))
 				{
 					maxfails--;
 					if (maxfails == 0)
@@ -160,7 +163,7 @@ class AIDirector : EventHandler
 			else
 			{
 				index = random(0,item_roster.size()-1);
-				if (!Spawn(item_roster[index], spawnpos, monsterPos, player, spawnpoint.angle))
+				if (!Spawn(item_roster[index], spawnpoint, offset, player, spawnpoint.angle))
 				{
 					maxfails--;
 					if (maxfails == 0)
@@ -189,7 +192,7 @@ class AIDirector : EventHandler
 		if (item)
 		{
 			if (item.owner) return;
-			let spawnpoint = Actor.Spawn('AIDirectorItemSpawnPoint', item.pos);
+			let spawnpoint = Actor.Spawn('AIDItemSpawnPoint', item.pos);
 			spawnpoint.angle = item.angle;
 			item_spawns.push(spawnpoint);
 			item_roster.push(item.GetClassName());
@@ -198,7 +201,7 @@ class AIDirector : EventHandler
 		}
 		else
 		{
-			let spawnpoint = Actor.Spawn('AIDirectorSpawnPoint', thing.pos);
+			let spawnpoint = Actor.Spawn('AIDMonsterSpawnPoint', thing.pos);
 			spawnpoint.angle = thing.angle;
 			monster_spawns.push(spawnpoint);
 			monster_roster.push(thing.GetClassName());
@@ -254,7 +257,7 @@ class AIDirector : EventHandler
 				while (!playeringame[pn]) pn--;
 				
 				Actor player = players[pn].mo;
-				Actor spawnpoint = GetSpawnPoint(player);
+				AIDSpawnPoint spawnpoint = GetSpawnPoint(player);
 				SpawnGroupAt(spawnpoint, player: player);
 			}
 			else if (aid_softenspawns && PercentChance(HealthFactor()*100.0))
