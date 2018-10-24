@@ -3,7 +3,7 @@
 server float aid_maxdistance = 2048.0;
 server float aid_mindistance = 1024.0;
 server float aid_startspawns = 50.0;
-server int aid_spawnrate = 700;
+server int aid_spawnrate = 15;
 server int aid_mingroupsize = 1;
 server int aid_maxgroupsize = 3;
 server int aid_saveboss = 2;
