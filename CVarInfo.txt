@@ -1,4 +1,5 @@
 //server int aid_randomseed = -1;
+server bool aid_enabled = true;
 
 server float aid_maxdistance = 2048.0;
 server float aid_mindistance = 1024.0;

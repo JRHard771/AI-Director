@@ -13,23 +13,25 @@ OptionValue "AID_BossSpawn"
 OptionMenu "AIDirOptions"
 {
 	Title "AI Director Options"
+	Option "AI Director Enabled", "aid_enabled", "onoff"
+	StaticText ""
 	Submenu "Item Randomizer", "AIDirItems"
 	StaticText ""
-	Slider "Min Spawn Distance", "aid_mindistance", 128.0, 4096.0, 128.0
-	Slider "Max Spawn Distance", "aid_maxdistance", 128.0, 4096.0, 128.0
+	Slider "Min Spawn Distance", "aid_mindistance", 128.0, 4096.0, 128.0, 2
+	Slider "Max Spawn Distance", "aid_maxdistance", 128.0, 4096.0, 128.0, 2
 	StaticText "Defines the range within which continual spawns may occur.", "Grey"
 	StaticText ""
-	Slider "Min Group Size", "aid_mingroupsize", 1, 10, 1
-	Slider "Max Group Size", "aid_maxgroupsize", 1, 10, 1
+	Slider "Min Group Size", "aid_mingroupsize", 1, 10, 1, 0
+	Slider "Max Group Size", "aid_maxgroupsize", 1, 10, 1, 0
 	StaticText "Determines how many monsters may spawn at a single spawn point.", "Grey"
 	StaticText ""
-	Slider "Spawn Rate", "aid_spawnrate", 1, 30, 1
+	Slider "Spawn Rate", "aid_spawnrate", 1, 30, 1, 0
 	StaticText "Affects the time between continual spawns. Higher values are", "Grey"
 	StaticText "slower/less frequent. Spawning larger groups of monsters will", "Grey"
 	StaticText "also create longer pauses between spawns, so this can be", "Grey"
 	StaticText "affected by your group size settings.", "Grey"
 	StaticText ""
-	Slider "Starting Population Factor", "aid_startspawns", 0.0, 100.0, 1.0
+	Slider "Starting Population Factor", "aid_startspawns", 0.0, 100.0, 1.0, 2
 	StaticText "Adjusts how many monsters are spawned on map start. This is also", "Grey"
 	StaticText "affected by your group size settings.", "Grey"
 	StaticText ""
@@ -72,12 +74,12 @@ OptionMenu "AIDirItems"
 	Option "Exclude Counted Items", "aid_nobonuses", "onoff"
 	StaticText "Do not remove or spawn items that add to your item score.", "Grey"
 	StaticText ""
-	Slider "Min Item Group Size", "aid_minitemgroup", 1, 10, 1
-	Slider "Max Item Group Size", "aid_maxitemgroup", 1, 10, 1
+	Slider "Min Item Group Size", "aid_minitemgroup", 1, 10, 1, 0
+	Slider "Max Item Group Size", "aid_maxitemgroup", 1, 10, 1, 0
 	StaticText "Determines how many items may be spawned per spawn point at the", "Grey"
 	StaticText "start of the map.", "Grey"
 	StaticText ""
-	Slider "Item Count Factor", "aid_itemcount", 0.0, 100.0, 1.0
+	Slider "Item Count Factor", "aid_itemcount", 0.0, 100.0, 1.0, 2
 	StaticText "Adjusts how many items are spawned on map start. This is", "Grey"
 	StaticText "affected by your item group size settings.", "Grey"
 }
