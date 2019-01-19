@@ -192,7 +192,7 @@ class AIDirector : EventHandler
 		if (item)
 		{
 			if (item.owner) return;
-			let spawnpoint = Actor.Spawn('AIDItemSpawnPoint', item.pos);
+			AIDItemSpawnPoint spawnpoint = AIDItemSpawnPoint(Actor.Spawn('AIDItemSpawnPoint', item.pos));
 			spawnpoint.angle = item.angle;
 			item_spawns.push(spawnpoint);
 			item_roster.push(item.GetClassName());
@@ -204,7 +204,7 @@ class AIDirector : EventHandler
 		}
 		else
 		{
-			let spawnpoint = Actor.Spawn('AIDMonsterSpawnPoint', thing.pos);
+			AIDMonsterSpawnPoint spawnpoint = AIDMonsterSpawnPoint(Actor.Spawn('AIDMonsterSpawnPoint', thing.pos));
 			spawnpoint.angle = thing.angle;
 			spawnpoint.bAMBUSH = thing.bAMBUSH;
 			monster_spawns.push(spawnpoint);
